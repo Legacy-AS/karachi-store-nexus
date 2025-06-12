@@ -1,14 +1,28 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import LoginForm from '../components/auth/LoginForm';
+import AdminDashboard from '../components/admin/AdminDashboard';
+import EmployeeDashboard from '../components/employee/EmployeeDashboard';
+import SuperAdminPanel from '../components/super-admin/SuperAdminPanel';
 
 const Index = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
-  );
+  const [user, setUser] = useState<any>(null);
+
+  if (!user) {
+    return <LoginForm onLogin={setUser} />;
+  }
+
+  switch (user.role) {
+    case 'super-admin':
+      return <SuperAdminPanel user={user} onLogout={() => setUser(null)} />;
+    case 'admin':
+      return <AdminDashboard user={user} onLogout={() => setUser(null)} />;
+    case 'employee':
+      return <EmployeeDashboard user={user} onLogout={() => setUser(null)} />;
+    default:
+      return <Navigate to="/" replace />;
+  }
 };
 
 export default Index;
